@@ -177,3 +177,4 @@ if uploaded_file is not None:
     st.image(cv2.cvtColor(final_output, cv2.COLOR_BGR2RGB), caption="Final Detection Result", use_column_width=True)
     st.success(f"✅ Detection complete! {len(preds)} diseased region(s) detected.")
 
+
