@@ -3,6 +3,8 @@ import numpy as np
 import cv2
 from PIL import Image
 from tensorflow.keras.models import load_model
+import gdown
+import os
 
 # ============================================================
 #              CONFIGURATION AND MODEL LOADING
@@ -13,6 +15,17 @@ st.set_page_config(page_title="Potato Leaf Disease Detector", layout="wide")
 st.title("🍀 Potato Leaf Disease Detection & Classification")
 st.write("Upload a potato leaf image to detect and classify diseased regions using U-Net and CNN models.")
 
+# Model download URLs
+UNET_URL = "https://drive.google.com/uc?id=1oq09Zy0L0lYMrqp4ZTjMqUkqpuiwmkkU"
+CNN_URL  = "https://drive.google.com/uc?id=1KVl4Cu4jqgobg4yJl89vstuJqHoiEUCx"
+
+# Download models if not already present
+if not os.path.exists("unet80.h5"):
+    gdown.download(UNET_URL, "unet80.h5", quiet=False)
+
+if not os.path.exists("Potato_Disease_Detection_Model2.h5"):
+    gdown.download(CNN_URL, "Potato_Disease_Detection_Model2.h5", quiet=False)
+
 @st.cache_resource
 def load_models():
     unet_model = load_model("unet80.h5", compile=False)
@@ -20,9 +33,8 @@ def load_models():
     return unet_model, cnn_model
 
 unet_model, cnn_model = load_models()
-class_names = ["Bacterial Blight", "Leaf Spot"]
+class_names = ["Bacterial Blight", "Bacterial Late"]
 IMG_SIZE = 256
-
 
 # ============================================================
 #              DETECTION + CLASSIFICATION FUNCTION
@@ -141,7 +153,6 @@ def show_disease_detection(img, unet_model, cnn_model, class_names,
         cv2.line(final_output, leaf_center, panel_center, (0, 0, 255), 1)
 
     return final_output, final_predictions
-
 
 # ============================================================
 #              STREAMLIT UI LOGIC
